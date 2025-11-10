@@ -17,13 +17,11 @@ public class EchangeController {
 
     @GetMapping
     public List<Echange> getAll() {
-
         return service.lister();
     }
 
     @PostMapping
     public Echange proposer(@RequestBody Echange e) {
-
         return service.proposer(e);
     }
 
