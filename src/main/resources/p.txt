@@ -1,0 +1,1524 @@
+Application Pokémon Collector
+1. Liste des compétences mises en œuvre
+
+Analyse des besoins et rédaction du cahier des charges
+
+Modélisation des données (MCD, MLD)
+
+Conception de l’architecture logicielle (MVC, client-serveur)
+
+Développement front-end et back-end
+Application Pokémon Collector
+1. Liste des compétences mises en œuvre
+
+Analyse des besoins et rédaction du cahier des charges
+
+Modélisation des données (MCD, MLD)
+
+Conception de l’architecture logicielle (MVC, client-serveur)
+
+Développement front-end et back-end
+
+Création et gestion de bases de données SQL
+
+Gestion de projet (planning, suivi, qualité)
+
+Réalisation de maquettes et prototypage
+
+Rédaction de la documentation technique et fonctionnelle
+
+Règles métier principales :
+
+Chaque booster contient exactement 10 cartes.
+
+Les cartes obtenues en ouvrant un booster sont ajoutées automatiquement à la collection du dresseur.
+
+Un utilisateur peut créer et modifier uniquement son propre profil.
+
+Les utilisateurs ne peuvent pas modifier la collection ou le profil des autres.
+
+Les échanges de cartes nécessitent la validation des deux dresseurs concernés.
+
+Les cartes sont caractérisées par leur niveau et leur rareté (impact sur la valeur et les échanges).
+
+Un utilisateur non connecté peut voir les boosters disponibles, mais ne peut ni ouvrir de booster ni effectuer d’échanges.
+
+2. Cahier des charges / expression des besoins
+
+Projet : Application Pokémon Collector
+
+Objectif : Permettre aux utilisateurs de gérer leur collection de Pokémon, ouvrir des boosters, récupérer des cartes, les échanger et gérer leur profil dans une interface.
+
+Fonctionnalités principales :
+
+Gestion des Pokémon : ajout via boosters, consultation, recherche
+
+Gestion des utilisateurs / dresseurs : création et modification de profil
+
+Échanges de cartes : proposer et accepter des échanges avec d’autres utilisateurs en respectant le même niveau et rareté
+
+Consultation des statistiques : nombre de cartes, raretés, type de Pokémon
+
+Gestion par administrateur : CRUD complet sur les cartes et boosters
+
+3. Présentation de l’entreprise et du service
+
+Entreprise : PokéTech, startup spécialisée dans la gestion de collection Pokémon
+
+Service concerné : Développement de l’application et suivi des utilisateurs
+
+Utilisateurs principaux : Dresseurs Pokémon et administrateurs
+
+Types d’utilisateurs :
+
+Dresseur : gérer son profil, sa collection, proposer et accepter des échanges
+
+Administrateur : gérer toutes les cartes et boosters (CRUD), visualiser les utilisateurs et leur collection
+
+4. Gestion de projet
+Planning :
+
+Semaine 1-2 : Analyse et rédaction du cahier des charges
+
+Semaine 3 : Modélisation des données (MCD/MLD)
+
+Semaine 4 : Conception des maquettes et architecture MVC
+
+Semaines 5-6 : Développement back-end
+
+Semaines 7-8 : Développement front-end
+
+Semaine 8 : Intégration validation des échanges et règles métier (niveau/rarete, double acceptation)
+
+Semaine 9 : Tests et validation
+
+Environnement humain : 1 Développeur
+Objectifs de qualité : Interface intuitive, rapide, sécurisée et responsive
+
+5. Spécifications fonctionnelles
+Fonctionnalité	Description	Priorité
+Gestion des Pokémon	Ouvrir un booster, récupérer 10 cartes, ajouter à sa collection	Haute
+Gestion des dresseurs	Créer et modifier profil	Haute
+Échanges	Proposer et accepter des échanges de cartes (même niveau et rareté, double validation)	Haute
+Consultation	Rechercher cartes par nom, type, rareté, ou niveau	Moyenne
+Administration	Ajouter, modifier, supprimer cartes et boosters	Haute
+
+Règles métier :
+
+Les utilisateurs ne peuvent modifier que leur propre collection
+
+Chaque booster contient exactement 10 cartes
+
+Les échanges nécessitent validation des deux parties
+
+Les utilisateurs non connectés peuvent uniquement voir les boosters
+
+6. Contraintes et livrables
+
+Contraintes :
+Base de données relationnelle (PostgreSQL)
+Interface web responsive
+Respect des normes RGPD pour les données utilisateurs
+
+Livrables attendus :
+Code source complet
+Base de données fonctionnelle
+Documentation technique et fonctionnelle
+Maquettes et diagrammes UML
+
+7. Architecture logicielle
+
+Type : MVC (Model-View-Controller)
+
+Composants :
+
+Front-end : Angular, HTML, CSS, JavaScript
+
+Back-end : Java
+
+Base de données : pgAdmin
+
+8. Maquettes et enchaînement
+
+Page d’accueil → choix : gestion Pokémon / dresseurs / échanges / administration
+
+Gestion Pokémon → liste, bouton “Ouvrir booster”
+
+Gestion dresseurs → création / modification de profil
+
+Échanges → proposition et acceptation d’échanges (même niveau et rareté, double validation)
+
+Consultation → recherche et filtres sur la collection
+
+9. Modèle Entités-Associations et Modèle Physique
+Entités :
+
+Dresseur : (id_dresseur, nom, pseudo, avatar, niveau)
+
+Carte : (id_carte, nom, type, rareté, niveau)
+
+Booster : (id_booster, date_ouverture)
+
+Collection : (id_collection, id_dresseur, id_carte)
+
+Échange : (id_echange, id_dresseur1, id_dresseur2, id_carte1, id_carte2, date, statut)
+
+Relations :
+
+Un dresseur possède plusieurs cartes à travers la collection (1:N)
+
+Un dresseur ouvre plusieurs boosters (1:N)
+
+Un échange implique deux dresseurs et deux cartes (1:1)
+
+MLD (relationnel) :
+CREATE TABLE Dresseur (
+    id_dresseur SERIAL PRIMARY KEY,
+    nom VARCHAR(50),
+    pseudo VARCHAR(50),
+    avatar VARCHAR(100),
+    niveau INT,
+    role VARCHAR(20) -- 'dresseur' ou 'admin'
+);
+
+CREATE TABLE Carte (
+    id_carte SERIAL PRIMARY KEY,
+    nom VARCHAR(50),
+    type VARCHAR(30),
+    rarete VARCHAR(20),
+    niveau INT
+);
+
+CREATE TABLE Booster (
+    id_booster SERIAL PRIMARY KEY,
+    date_ouverture DATE,
+    id_dresseur INT,
+    FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur)
+);
+
+CREATE TABLE Collection (
+    id_collection SERIAL PRIMARY KEY,
+    id_dresseur INT,
+    id_carte INT,
+    FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_carte) REFERENCES Carte(id_carte)
+);
+
+CREATE TABLE Echange (
+    id_echange SERIAL PRIMARY KEY,
+    id_dresseur1 INT,
+    id_dresseur2 INT,
+    id_carte1 INT,
+    id_carte2 INT,
+    date DATE,
+    statut VARCHAR(20),
+    FOREIGN KEY (id_dresseur1) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_dresseur2) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_carte1) REFERENCES Carte(id_carte),
+    FOREIGN KEY (id_carte2) REFERENCES Carte(id_carte)
+);
+
+9.1. Relations fonctionnelles entre entités
+Les relations entre les entités traduisent les principales règles métier de l’application Pokémon Collector :
+Un dresseur peut ouvrir plusieurs boosters (relation 1:N).
+Un dresseur possède plusieurs cartes à travers la table Collection (relation 1:N).
+Un échange implique exactement deux dresseurs et deux cartes (relation 1:1).
+Chaque carte appartient à un seul dresseur à un instant donné.
+Les administrateurs disposent de droits de gestion complets sur l’ensemble des entités (cartes, boosters, utilisateurs).
+
+10. Diagramme Entité–Association (conceptuel, textuel)
+[Dresseur] 1 ----- N [Collection] N ----- 1 [Carte]
+[Dresseur] 1 ----- N [Booster]
+[Dresseur] 1 ----- 1 [Echange] 1 ----- [Dresseur]
+[Echange] 1 ----- 1 [Carte] (id_carte1 et id_carte2)
+
+
+Chaque dresseur possède plusieurs cartes via Collection et plusieurs boosters
+
+Chaque échange implique exactement deux dresseurs et deux cartes
+
+11. Diagrammes UML
+1. Diagramme de cas d’utilisation (Use Case)
+                +-----------------+
+                |   Dresseur      |
+                +-----------------+
+                        |
+         ---------------------------------------
+         |          |           |               |
++----------------+  +----------------+  +----------------+  +----------------+
+| Gérer Profil   |  | Gérer Pokémon  |  | Gérer Echanges |  | Consulter Cartes|
++----------------+  +----------------+  +----------------+  +----------------+
+| + creerProfil()|  | + ouvrirBooster()| | + proposer()  |  | + rechercher() |
+| + modifierProfil()| | + ajouterCarte()| | + accepter()  |  +----------------+
++----------------+  +----------------+  +----------------+
+
+
+Nouveaux acteurs :
+
+Administrateur : CRUD cartes et boosters, visualisation utilisateurs
+
+2. Diagramme de séquence UML – “Ouvrir un booster”
+Dresseur        Interface Web        Back-end          Base de données
+   |                  |                  |                     |
+   |  cliquer "Ouvrir booster"           |                     |
+   |----------------------------------> |                     |
+   |                  |  demande ouverture booster           |
+   |                  |-------------------------------------->|
+   |                  |                  |  sélectionner 10 cartes aléatoires
+   |                  |                  |-------------------->|
+   |                  |                  |  stocker cartes dans Collection
+   |                  |                  |<-------------------|
+   |                  |<--------------------------------------|
+   |  affichage des 10 cartes récupérées|                     |
+
+
+Les utilisateurs non connectés ne peuvent pas ouvrir de booster
+
+3. Diagramme de classes UML
++----------------+            +----------------+
+|   Dresseur     |            |   Administrateur|
++----------------+            +----------------+
+| - id: int      |            | - id: int       |
+| - nom: string  |            | - nom: string   |
+| - pseudo: string|           | - pseudo: string|
+| - avatar: string|           | - role: string  |
+| - niveau: int  |            +----------------+
++----------------+            | + ajouterCarte()|
+| + creerProfil()|            | + modifierCarte()|
+| + modifierProfil()|         | + supprimerCarte()|
++----------------+            +----------------+
+          1
+          |
+          | 1..*
++----------------+
+|     Carte      |
++----------------+
+| - id: int      |
+| - nom: string  |
+| - type: string |
+| - rarete: string|
+| - niveau: int  |
++----------------+
+| + consulter()  |
++----------------+
+          ^ 1..*
+          |
++----------------+
+|   Collection   |
++----------------+
+| - id: int      |
++----------------+
+
++----------------+
+|    Booster     |
++----------------+
+| - id: int      |
+| - dateOuverture: date|
++----------------+
+| + ouvrir()     |
++----------------+
+
++----------------+
+|    Echange     |
++----------------+
+| - id: int      |
+| - date: date   |
+| - statut: string|
++----------------+
+| + proposer()   |
+| + accepter()   |
++----------------+
+          ^
+          |
+          |
+Dresseur 1 <------> 1 Dresseur
+Echange 1 <------> 1 Carte (id_carte1 et id_carte2)
+
+
+Deux types d’acteurs : Dresseur et Administrateur
+Échanges vérifient niveau et rareté et nécessitent double acceptation
+
+------------------------------------------------------------------
+Maquette telephone : Pokémon Collector, 3 maquettes principales :
+
+           Page d’accueil → choix entre Gérer Pokémon, Gérer profil, Échanges, Administration.
+
+           Écran d’ouverture d’un booster → bouton “Ouvrir booster” + affichage des 10 cartes tirées.
+
+           Écran d’échanges → liste des propositions, bouton Proposer un échange, bouton Accepter.
+
+
+-----------------------------------------------------------------
+Maquette PC le zoning (répartition des zones) et le wireframe (blocs fonctionnels détaillés) :
+            Header → présent avec le titre, la zone de recherche et l’icône utilisateur.
+
+            Sidebar gauche → avec les 4 menus (Gérer Pokémon, Gérer profil, Échanges, Administration).
+
+            Zone centrale → section Ouvrir booster + grille de cartes.
+
+            Colonne droite → section Échanges avec cartes et bouton Accepter.
+
+            Footer → avec Mentions légales et Support.
+
+-------------------------------------------------------------------
+WIREFRAME :
+
+1. Page d’accueil
+Header : titre + barre de recherche + profil
+Menu : Gérer Pokémon / Profil / Échanges / Admin
+Zone centrale : choix d’action ou résumé de collection
+
+2. Page Gestion Pokémon / Ouverture booster
+Bouton “Ouvrir booster”
+Grille des cartes obtenuesApplication Pokémon Collector
+                          1. Liste des compétences mises en œuvre
+
+                          Analyse des besoins et rédaction du cahier des charges
+
+                          Modélisation des données (MCD, MLD)
+
+                          Conception de l’architecture logicielle (MVC, client-serveur)
+
+                          Développement front-end et back-end
+                          Application Pokémon Collector
+                          1. Liste des compétences mises en œuvre
+
+                          Analyse des besoins et rédaction du cahier des charges
+
+                          Modélisation des données (MCD, MLD)
+
+                          Conception de l’architecture logicielle (MVC, client-serveur)
+
+                          Développement front-end et back-end
+
+                          Création et gestion de bases de données SQL
+
+                          Gestion de projet (planning, suivi, qualité)
+
+                          Réalisation de maquettes et prototypage
+
+                          Rédaction de la documentation technique et fonctionnelle
+
+                          Règles métier principales :
+
+                          Chaque booster contient exactement 10 cartes.
+
+                          Les cartes obtenues en ouvrant un booster sont ajoutées automatiquement à la collection du dresseur.
+
+                          Un utilisateur peut créer et modifier uniquement son propre profil.
+
+                          Les utilisateurs ne peuvent pas modifier la collection ou le profil des autres.
+
+                          Les échanges de cartes nécessitent la validation des deux dresseurs concernés.
+
+                          Les cartes sont caractérisées par leur niveau et leur rareté (impact sur la valeur et les échanges).
+
+                          Un utilisateur non connecté peut voir les boosters disponibles, mais ne peut ni ouvrir de booster ni effectuer d’échanges.
+
+                          2. Cahier des charges / expression des besoins
+
+                          Projet : Application Pokémon Collector
+
+                          Objectif : Permettre aux utilisateurs de gérer leur collection de Pokémon, ouvrir des boosters, récupérer des cartes, les échanger et gérer leur profil dans une interface.
+
+                          Fonctionnalités principales :
+
+                          Gestion des Pokémon : ajout via boosters, consultation, recherche
+
+                          Gestion des utilisateurs / dresseurs : création et modification de profil
+
+                          Échanges de cartes : proposer et accepter des échanges avec d’autres utilisateurs en respectant le même niveau et rareté
+
+                          Consultation des statistiques : nombre de cartes, raretés, type de Pokémon
+
+                          Gestion par administrateur : CRUD complet sur les cartes et boosters
+
+                          3. Présentation de l’entreprise et du service
+
+                          Entreprise : PokéTech, startup spécialisée dans la gestion de collection Pokémon
+
+                          Service concerné : Développement de l’application et suivi des utilisateurs
+
+                          Utilisateurs principaux : Dresseurs Pokémon et administrateurs
+
+                          Types d’utilisateurs :
+
+                          Dresseur : gérer son profil, sa collection, proposer et accepter des échanges
+
+                          Administrateur : gérer toutes les cartes et boosters (CRUD), visualiser les utilisateurs et leur collection
+
+                          4. Gestion de projet
+                          Planning :
+
+                          Semaine 1-2 : Analyse et rédaction du cahier des charges
+
+                          Semaine 3 : Modélisation des données (MCD/MLD)
+
+                          Semaine 4 : Conception des maquettes et architecture MVC
+
+                          Semaines 5-6 : Développement back-end
+
+                          Semaines 7-8 : Développement front-end
+
+                          Semaine 8 : Intégration validation des échanges et règles métier (niveau/rarete, double acceptation)
+
+                          Semaine 9 : Tests et validation
+
+                          Environnement humain : 1 Développeur
+                          Objectifs de qualité : Interface intuitive, rapide, sécurisée et responsive
+
+                          5. Spécifications fonctionnelles
+                          Fonctionnalité	Description	Priorité
+                          Gestion des Pokémon	Ouvrir un booster, récupérer 10 cartes, ajouter à sa collection	Haute
+                          Gestion des dresseurs	Créer et modifier profil	Haute
+                          Échanges	Proposer et accepter des échanges de cartes (même niveau et rareté, double validation)	Haute
+                          Consultation	Rechercher cartes par nom, type, rareté, ou niveau	Moyenne
+                          Administration	Ajouter, modifier, supprimer cartes et boosters	Haute
+
+                          Règles métier :
+
+                          Les utilisateurs ne peuvent modifier que leur propre collection
+
+                          Chaque booster contient exactement 10 cartes
+
+                          Les échanges nécessitent validation des deux parties
+
+                          Les utilisateurs non connectés peuvent uniquement voir les boosters
+
+                          6. Contraintes et livrables
+
+                          Contraintes :
+                          Base de données relationnelle (PostgreSQL)
+                          Interface web responsive
+                          Respect des normes RGPD pour les données utilisateurs
+
+                          Livrables attendus :
+                          Code source complet
+                          Base de données fonctionnelle
+                          Documentation technique et fonctionnelle
+                          Maquettes et diagrammes UML
+
+                          7. Architecture logicielle
+
+                          Type : MVC (Model-View-Controller)
+
+                          Composants :
+
+                          Front-end : Angular, HTML, CSS, JavaScript
+
+                          Back-end : Java
+
+                          Base de données : pgAdmin
+
+                          8. Maquettes et enchaînement
+
+                          Page d’accueil → choix : gestion Pokémon / dresseurs / échanges / administration
+
+                          Gestion Pokémon → liste, bouton “Ouvrir booster”
+
+                          Gestion dresseurs → création / modification de profil
+
+                          Échanges → proposition et acceptation d’échanges (même niveau et rareté, double validation)
+
+                          Consultation → recherche et filtres sur la collection
+
+                          9. Modèle Entités-Associations et Modèle Physique
+                          Entités :
+
+                          Dresseur : (id_dresseur, nom, pseudo, avatar, niveau)
+
+                          Carte : (id_carte, nom, type, rareté, niveau)
+
+                          Booster : (id_booster, date_ouverture)
+
+                          Collection : (id_collection, id_dresseur, id_carte)
+
+                          Échange : (id_echange, id_dresseur1, id_dresseur2, id_carte1, id_carte2, date, statut)
+
+                          Relations :
+
+                          Un dresseur possède plusieurs cartes à travers la collection (1:N)
+
+                          Un dresseur ouvre plusieurs boosters (1:N)
+
+                          Un échange implique deux dresseurs et deux cartes (1:1)
+
+                          MLD (relationnel) :
+                          CREATE TABLE Dresseur (
+                              id_dresseur SERIAL PRIMARY KEY,
+                              nom VARCHAR(50),
+                              pseudo VARCHAR(50),
+                              avatar VARCHAR(100),
+                              niveau INT,
+                              role VARCHAR(20) -- 'dresseur' ou 'admin'
+                          );
+
+                          CREATE TABLE Carte (
+                              id_carte SERIAL PRIMARY KEY,
+                              nom VARCHAR(50),
+                              type VARCHAR(30),
+                              rarete VARCHAR(20),
+                              niveau INT
+                          );
+
+                          CREATE TABLE Booster (
+                              id_booster SERIAL PRIMARY KEY,
+                              date_ouverture DATE,
+                              id_dresseur INT,
+                              FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur)
+                          );
+
+                          CREATE TABLE Collection (
+                              id_collection SERIAL PRIMARY KEY,
+                              id_dresseur INT,
+                              id_carte INT,
+                              FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_carte) REFERENCES Carte(id_carte)
+                          );
+
+                          CREATE TABLE Echange (
+                              id_echange SERIAL PRIMARY KEY,
+                              id_dresseur1 INT,
+                              id_dresseur2 INT,
+                              id_carte1 INT,
+                              id_carte2 INT,
+                              date DATE,
+                              statut VARCHAR(20),
+                              FOREIGN KEY (id_dresseur1) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_dresseur2) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_carte1) REFERENCES Carte(id_carte),
+                              FOREIGN KEY (id_carte2) REFERENCES Carte(id_carte)
+                          );
+
+                          9.1. Relations fonctionnelles entre entités
+                          Les relations entre les entités traduisent les principales règles métier de l’application Pokémon Collector :
+                          Un dresseur peut ouvrir plusieurs boosters (relation 1:N).
+                          Un dresseur possède plusieurs cartes à travers la table Collection (relation 1:N).
+                          Un échange implique exactement deux dresseurs et deux cartes (relation 1:1).
+                          Chaque carte appartient à un seul dresseur à un instant donné.
+                          Les administrateurs disposent de droits de gestion complets sur l’ensemble des entités (cartes, boosters, utilisateurs).
+
+                          10. Diagramme Entité–Association (conceptuel, textuel)
+                          [Dresseur] 1 ----- N [Collection] N ----- 1 [Carte]
+                          [Dresseur] 1 ----- N [Booster]
+                          [Dresseur] 1 ----- 1 [Echange] 1 ----- [Dresseur]
+                          [Echange] 1 ----- 1 [Carte] (id_carte1 et id_carte2)
+
+
+                          Chaque dresseur possède plusieurs cartes via Collection et plusieurs boosters
+
+                          Chaque échange implique exactement deux dresseurs et deux cartes
+
+                          11. Diagrammes UML
+                          1. Diagramme de cas d’utilisation (Use Case)
+                                          +-----------------+
+                                          |   Dresseur      |
+                                          +-----------------+
+                                                  |
+                                   ---------------------------------------
+                                   |          |           |               |
+                          +----------------+  +----------------+  +----------------+  +----------------+
+                          | Gérer Profil   |  | Gérer Pokémon  |  | Gérer Echanges |  | Consulter Cartes|
+                          +----------------+  +----------------+  +----------------+  +----------------+
+                          | + creerProfil()|  | + ouvrirBooster()| | + proposer()  |  | + rechercher() |
+                          | + modifierProfil()| | + ajouterCarte()| | + accepter()  |  +----------------+
+                          +----------------+  +----------------+  +----------------+
+
+
+                          Nouveaux acteurs :
+
+                          Administrateur : CRUD cartes et boosters, visualisation utilisateurs
+
+                          2. Diagramme de séquence UML – “Ouvrir un booster”
+                          Dresseur        Interface Web        Back-end          Base de données
+                             |                  |                  |                     |
+                             |  cliquer "Ouvrir booster"           |                     |
+                             |----------------------------------> |                     |
+                             |                  |  demande ouverture booster           |
+                             |                  |-------------------------------------->|
+                             |                  |                  |  sélectionner 10 cartes aléatoires
+                             |                  |                  |-------------------->|
+                             |                  |                  |  stocker cartes dans Collection
+                             |                  |                  |<-------------------|
+                             |                  |<--------------------------------------|
+                             |  affichage des 10 cartes récupérées|                     |
+
+
+                          Les utilisateurs non connectés ne peuvent pas ouvrir de booster
+
+                          3. Diagramme de classes UML
+                          +----------------+            +----------------+
+                          |   Dresseur     |            |   Administrateur|
+                          +----------------+            +----------------+
+                          | - id: int      |            | - id: int       |
+                          | - nom: string  |            | - nom: string   |
+                          | - pseudo: string|           | - pseudo: string|
+                          | - avatar: string|           | - role: string  |
+                          | - niveau: int  |            +----------------+
+                          +----------------+            | + ajouterCarte()|
+                          | + creerProfil()|            | + modifierCarte()|
+                          | + modifierProfil()|         | + supprimerCarte()|
+                          +----------------+            +----------------+
+                                    1
+                                    |
+                                    | 1..*
+                          +----------------+
+                          |     Carte      |
+                          +----------------+
+                          | - id: int      |
+                          | - nom: string  |
+                          | - type: string |
+                          | - rarete: string|
+                          | - niveau: int  |
+                          +----------------+
+                          | + consulter()  |
+                          +----------------+
+                                    ^ 1..*
+                                    |
+                          +----------------+
+                          |   Collection   |
+                          +----------------+
+                          | - id: int      |
+                          +----------------+
+
+                          +----------------+
+                          |    Booster     |
+                          +----------------+
+                          | - id: int      |
+                          | - dateOuverture: date|
+                          +----------------+
+                          | + ouvrir()     |
+                          +----------------+
+
+                          +----------------+
+                          |    Echange     |
+                          +----------------+
+                          | - id: int      |
+                          | - date: date   |
+                          | - statut: string|
+                          +----------------+
+                          | + proposer()   |
+                          | + accepter()   |
+                          +----------------+
+                                    ^
+                                    |
+                                    |
+                          Dresseur 1 <------> 1 Dresseur
+                          Echange 1 <------> 1 Carte (id_carte1 et id_carte2)
+
+
+                          Deux types d’acteurs : Dresseur et Administrateur
+                          Échanges vérifient niveau et rareté et nécessitent double acceptation
+
+                          ------------------------------------------------------------------
+                          Maquette telephone : Pokémon Collector, 3 maquettes principales :
+
+                                     Page d’accueil → choix entre Gérer Pokémon, Gérer profil, Échanges, Administration.
+
+                                     Écran d’ouverture d’un booster → bouton “Ouvrir booster” + affichage des 10 cartes tirées.
+
+                                     Écran d’échanges → liste des propositions, bouton Proposer un échange, bouton Accepter.
+
+
+                          -----------------------------------------------------------------
+                          Maquette PC le zoning (répartition des zones) et le wireframe (blocs fonctionnels détaillés) :
+                                      Header → présent avec le titre, la zone de recherche et l’icône utilisateur.
+
+                                      Sidebar gauche → avec les 4 menus (Gérer Pokémon, Gérer profil, Échanges, Administration).
+
+                                      Zone centrale → section Ouvrir booster + grille de cartes.
+
+                                      Colonne droite → section Échanges avec cartes et bouton Accepter.
+
+                                      Footer → avec Mentions légales et Support.
+
+                          -------------------------------------------------------------------
+                          WIREFRAME :
+
+                          1. Page d’accueil
+                          Header : titre + barre de recherche + profil
+                          Menu : Gérer Pokémon / Profil / Échanges / Admin
+                          Zone centrale : choix d’action ou résumé de collection
+
+                          2. Page Gestion Pokémon / Ouverture booster
+                          Bouton “Ouvrir booster”
+                          Grille des cartes obtenues
+
+                          3. Page Échanges
+                          Liste des propositions
+                          Boutons : “Proposer un échange”, “Accepter”
+
+                          4. Page Profil
+                          Formulaire : Nom, pseudo, avatar, niveau
+                          Boutons “Modifier”
+                          Création et gestion de bases de données SQL
+
+                          Gestion de projet (planning, suivi, qualité)
+
+                          Réalisation de maquettes et prototypage
+
+                          Rédaction de la documentation technique et fonctionnelle
+
+                          Règles métier principales :
+
+                          Chaque booster contient exactement 10 cartes.
+
+                          Les cartes obtenues en ouvrant un booster sont ajoutées automatiquement à la collection du dresseur.
+
+                          Un utilisateur peut créer et modifier uniquement son propre profil.
+
+                          Les utilisateurs ne peuvent pas modifier la collection ou le profil des autres.
+
+                          Les échanges de cartes nécessitent la validation des deux dresseurs concernés.
+
+                          Les cartes sont caractérisées par leur niveau et leur rareté (impact sur la valeur et les échanges).
+
+                          Un utilisateur non connecté peut voir les boosters disponibles, mais ne peut ni ouvrir de booster ni effectuer d’échanges.
+
+                          2. Cahier des charges / expression des besoins
+
+                          Projet : Application Pokémon Collector
+
+                          Objectif : Permettre aux utilisateurs de gérer leur collection de Pokémon, ouvrir des boosters, récupérer des cartes, les échanger et gérer leur profil dans une interface.
+
+                          Fonctionnalités principales :
+
+                          Gestion des Pokémon : ajout via boosters, consultation, recherche
+
+                          Gestion des utilisateurs / dresseurs : création et modification de profil
+
+                          Échanges de cartes : proposer et accepter des échanges avec d’autres utilisateurs en respectant le même niveau et rareté
+
+                          Consultation des statistiques : nombre de cartes, raretés, type de Pokémon
+
+                          Gestion par administrateur : CRUD complet sur les cartes et boosters
+
+                          3. Présentation de l’entreprise et du service
+
+                          Entreprise : PokéTech, startup spécialisée dans la gestion de collection Pokémon
+
+                          Service concerné : Développement de l’application et suivi des utilisateurs
+
+                          Utilisateurs principaux : Dresseurs Pokémon et administrateurs
+
+                          Types d’utilisateurs :
+
+                          Dresseur : gérer son profil, sa collection, proposer et accepter des échanges
+
+                          Administrateur : gérer toutes les cartes et boosters (CRUD), visualiser les utilisateurs et leur collection
+
+                          4. Gestion de projet
+                          Planning :
+
+                          Semaine 1-2 : Analyse et rédaction du cahier des charges
+
+                          Semaine 3 : Modélisation des données (MCD/MLD)
+
+                          Semaine 4 : Conception des maquettes et architecture MVC
+
+                          Semaines 5-6 : Développement back-end
+
+                          Semaines 7-8 : Développement front-end
+
+                          Semaine 8 : Intégration validation des échanges et règles métier (niveau/rarete, double acceptation)
+
+                          Semaine 9 : Tests et validation
+
+                          Environnement humain : 1 Développeur
+                          Objectifs de qualité : Interface intuitive, rapide, sécurisée et responsive
+
+                          5. Spécifications fonctionnelles
+                          Fonctionnalité	Description	Priorité
+                          Gestion des Pokémon	Ouvrir un booster, récupérer 10 cartes, ajouter à sa collection	Haute
+                          Gestion des dresseurs	Créer et modifier profil	Haute
+                          Échanges	Proposer et accepter des échanges de cartes (même niveau et rareté, double validation)	Haute
+                          Consultation	Rechercher cartes par nom, type, rareté, ou niveau	Moyenne
+                          Administration	Ajouter, modifier, supprimer cartes et boosters	Haute
+
+                          Règles métier :
+
+                          Les utilisateurs ne peuvent modifier que leur propre collection
+
+                          Chaque booster contient exactement 10 cartes
+
+                          Les échanges nécessitent validation des deux parties
+
+                          Les utilisateurs non connectés peuvent uniquement voir les boosters
+
+                          6. Contraintes et livrables
+
+                          Contraintes :
+                          Base de données relationnelle (PostgreSQL)
+                          Interface web responsive
+                          Respect des normes RGPD pour les données utilisateurs
+
+                          Livrables attendus :
+                          Code source complet
+                          Base de données fonctionnelle
+                          Documentation technique et fonctionnelle
+                          Maquettes et diagrammes UML
+
+                          7. Architecture logicielle
+
+                          Type : MVC (Model-View-Controller)
+
+                          Composants :
+
+                          Front-end : Angular, HTML, CSS, JavaScript
+
+                          Back-end : Java
+
+                          Base de données : pgAdmin
+
+                          8. Maquettes et enchaînement
+
+                          Page d’accueil → choix : gestion Pokémon / dresseurs / échanges / administration
+
+                          Gestion Pokémon → liste, bouton “Ouvrir booster”
+
+                          Gestion dresseurs → création / modification de profil
+
+                          Échanges → proposition et acceptation d’échanges (même niveau et rareté, double validation)
+
+                          Consultation → recherche et filtres sur la collection
+
+                          9. Modèle Entités-Associations et Modèle Physique
+                          Entités :
+
+                          Dresseur : (id_dresseur, nom, pseudo, avatar, niveau)
+
+                          Carte : (id_carte, nom, type, rareté, niveau)
+
+                          Booster : (id_booster, date_ouverture)
+
+                          Collection : (id_collection, id_dresseur, id_carte)
+
+                          Échange : (id_echange, id_dresseur1, id_dresseur2, id_carte1, id_carte2, date, statut)
+
+                          Relations :
+
+                          Un dresseur possède plusieurs cartes à travers la collection (1:N)
+
+                          Un dresseur ouvre plusieurs boosters (1:N)
+
+                          Un échange implique deux dresseurs et deux cartes (1:1)
+
+                          MLD (relationnel) :
+                          CREATE TABLE Dresseur (
+                              id_dresseur SERIAL PRIMARY KEY,
+                              nom VARCHAR(50),
+                              pseudo VARCHAR(50),
+                              avatar VARCHAR(100),
+                              niveau INT,
+                              role VARCHAR(20) -- 'dresseur' ou 'admin'
+                          );
+
+                          CREATE TABLE Carte (
+                              id_carte SERIAL PRIMARY KEY,
+                              nom VARCHAR(50),
+                              type VARCHAR(30),
+                              rarete VARCHAR(20),
+                              niveau INT
+                          );
+
+                          CREATE TABLE Booster (
+                              id_booster SERIAL PRIMARY KEY,
+                              date_ouverture DATE,
+                              id_dresseur INT,
+                              FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur)
+                          );
+
+                          CREATE TABLE Collection (
+                              id_collection SERIAL PRIMARY KEY,
+                              id_dresseur INT,
+                              id_carte INT,
+                              FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_carte) REFERENCES Carte(id_carte)
+                          );
+
+                          CREATE TABLE Echange (
+                              id_echange SERIAL PRIMARY KEY,
+                              id_dresseur1 INT,
+                              id_dresseur2 INT,
+                              id_carte1 INT,
+                              id_carte2 INT,
+                              date DATE,
+                              statut VARCHAR(20),
+                              FOREIGN KEY (id_dresseur1) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_dresseur2) REFERENCES Dresseur(id_dresseur),
+                              FOREIGN KEY (id_carte1) REFERENCES Carte(id_carte),
+                              FOREIGN KEY (id_carte2) REFERENCES Carte(id_carte)
+                          );
+
+                          9.1. Relations fonctionnelles entre entités
+                          Les relations entre les entités traduisent les principales règles métier de l’application Pokémon Collector :
+                          Un dresseur peut ouvrir plusieurs boosters (relation 1:N).
+                          Un dresseur possède plusieurs cartes à travers la table Collection (relation 1:N).
+                          Un échange implique exactement deux dresseurs et deux cartes (relation 1:1).
+                          Chaque carte appartient à un seul dresseur à un instant donné.
+                          Les administrateurs disposent de droits de gestion complets sur l’ensemble des entités (cartes, boosters, utilisateurs).
+
+                          10. Diagramme Entité–Association (conceptuel, textuel)
+                          [Dresseur] 1 ----- N [Collection] N ----- 1 [Carte]
+                          [Dresseur] 1 ----- N [Booster]
+                          [Dresseur] 1 ----- 1 [Echange] 1 ----- [Dresseur]
+                          [Echange] 1 ----- 1 [Carte] (id_carte1 et id_carte2)
+
+
+                          Chaque dresseur possède plusieurs cartes via Collection et plusieurs boosters
+
+                          Chaque échange implique exactement deux dresseurs et deux cartes
+
+                          11. Diagrammes UML
+                          1. Diagramme de cas d’utilisation (Use Case)
+                                          +-----------------+
+                                          |   Dresseur      |
+                                          +-----------------+
+                                                  |
+                                   ---------------------------------------
+                                   |          |           |               |
+                          +----------------+  +----------------+  +----------------+  +----------------+
+                          | Gérer Profil   |  | Gérer Pokémon  |  | Gérer Echanges |  | Consulter Cartes|
+                          +----------------+  +----------------+  +----------------+  +----------------+
+                          | + creerProfil()|  | + ouvrirBooster()| | + proposer()  |  | + rechercher() |
+                          | + modifierProfil()| | + ajouterCarte()| | + accepter()  |  +----------------+
+                          +----------------+  +----------------+  +----------------+
+
+
+                          Nouveaux acteurs :
+
+                          Administrateur : CRUD cartes et boosters, visualisation utilisateurs
+
+                          2. Diagramme de séquence UML – “Ouvrir un booster”
+                          Dresseur        Interface Web        Back-end          Base de données
+                             |                  |                  |                     |
+                             |  cliquer "Ouvrir booster"           |                     |
+                             |----------------------------------> |                     |
+                             |                  |  demande ouverture booster           |
+                             |                  |-------------------------------------->|
+                             |                  |                  |  sélectionner 10 cartes aléatoires
+                             |                  |                  |-------------------->|
+                             |                  |                  |  stocker cartes dans Collection
+                             |                  |                  |<-------------------|
+                             |                  |<--------------------------------------|
+                             |  affichage des 10 cartes récupérées|                     |
+
+
+                          Les utilisateurs non connectés ne peuvent pas ouvrir de booster
+
+                          3. Diagramme de classes UML
+                          +----------------+            +----------------+
+                          |   Dresseur     |            |   Administrateur|
+                          +----------------+            +----------------+
+                          | - id: int      |            | - id: int       |
+                          | - nom: string  |            | - nom: string   |
+                          | - pseudo: string|           | - pseudo: string|
+                          | - avatar: string|           | - role: string  |
+                          | - niveau: int  |            +----------------+
+                          +----------------+            | + ajouterCarte()|
+                          | + creerProfil()|            | + modifierCarte()|
+                          | + modifierProfil()|         | + supprimerCarte()|
+                          +----------------+            +----------------+
+                                    1
+                                    |
+                                    | 1..*
+                          +----------------+
+                          |     Carte      |
+                          +----------------+
+                          | - id: int      |
+                          | - nom: string  |
+                          | - type: string |
+                          | - rarete: string|
+                          | - niveau: int  |
+                          +----------------+
+                          | + consulter()  |
+                          +----------------+
+                                    ^ 1..*
+                                    |
+                          +----------------+
+                          |   Collection   |
+                          +----------------+
+                          | - id: int      |
+                          +----------------+
+
+                          +----------------+
+                          |    Booster     |
+                          +----------------+
+                          | - id: int      |
+                          | - dateOuverture: date|
+                          +----------------+
+                          | + ouvrir()     |
+                          +----------------+
+
+                          +----------------+
+                          |    Echange     |
+                          +----------------+
+                          | - id: int      |
+                          | - date: date   |
+                          | - statut: string|
+                          +----------------+
+                          | + proposer()   |
+                          | + accepter()   |
+                          +----------------+
+                                    ^
+                                    |
+                                    |
+                          Dresseur 1 <------> 1 Dresseur
+                          Echange 1 <------> 1 Carte (id_carte1 et id_carte2)
+
+
+                          Deux types d’acteurs : Dresseur et Administrateur
+                          Échanges vérifient niveau et rareté et nécessitent double acceptation
+
+                          ------------------------------------------------------------------
+                          Maquette telephone : Pokémon Collector, 3 maquettes principales :
+
+                                     Page d’accueil → choix entre Gérer Pokémon, Gérer profil, Échanges, Administration.
+
+                                     Écran d’ouverture d’un booster → bouton “Ouvrir booster” + affichage des 10 cartes tirées.
+
+                                     Écran d’échanges → liste des propositions, bouton Proposer un échange, bouton Accepter.
+
+
+                          -----------------------------------------------------------------
+                          Maquette PC le zoning (répartition des zones) et le wireframe (blocs fonctionnels détaillés) :
+                                      Header → présent avec le titre, la zone de recherche et l’icône utilisateur.
+
+                                      Sidebar gauche → avec les 4 menus (Gérer Pokémon, Gérer profil, Échanges, Administration).
+
+                                      Zone centrale → section Ouvrir booster + grille de cartes.
+
+                                      Colonne droite → section Échanges avec cartes et bouton Accepter.
+
+                                      Footer → avec Mentions légales et Support.
+
+                          -------------------------------------------------------------------
+                          WIREFRAME :
+
+                          1. Page d’accueil
+                          Header : titre + barre de recherche + profil
+                          Menu : Gérer Pokémon / Profil / Échanges / Admin
+                          Zone centrale : choix d’action ou résumé de collection
+
+                          2. Page Gestion Pokémon / Ouverture booster
+                          Bouton “Ouvrir booster”
+                          Grille des cartes obtenues
+
+                          3. Page Échanges
+                          Liste des propositions
+                          Boutons : “Proposer un échange”, “Accepter”
+
+                          4. Page Profil
+                          Formulaire : Nom, pseudo, avatar, niveau
+                          Boutons “Modifier”
+
+3. Page Échanges
+Liste des propositions
+Boutons : “Proposer un échange”, “Accepter”
+
+4. Page Profil
+Formulaire : Nom, pseudo, avatar, niveau
+Boutons “Modifier”
+Création et gestion de bases de données SQL
+
+Gestion de projet (planning, suivi, qualité)
+
+Réalisation de maquettes et prototypage
+
+Rédaction de la documentation technique et fonctionnelle
+
+Règles métier principales :
+
+Chaque booster contient exactement 10 cartes.
+
+Les cartes obtenues en ouvrant un booster sont ajoutées automatiquement à la collection du dresseur.
+
+Un utilisateur peut créer et modifier uniquement son propre profil.
+
+Les utilisateurs ne peuvent pas modifier la collection ou le profil des autres.
+
+Les échanges de cartes nécessitent la validation des deux dresseurs concernés.
+
+Les cartes sont caractérisées par leur niveau et leur rareté (impact sur la valeur et les échanges).
+
+Un utilisateur non connecté peut voir les boosters disponibles, mais ne peut ni ouvrir de booster ni effectuer d’échanges.
+
+2. Cahier des charges / expression des besoins
+
+Projet : Application Pokémon Collector
+
+Objectif : Permettre aux utilisateurs de gérer leur collection de Pokémon, ouvrir des boosters, récupérer des cartes, les échanger et gérer leur profil dans une interface.
+
+Fonctionnalités principales :
+
+Gestion des Pokémon : ajout via boosters, consultation, recherche
+
+Gestion des utilisateurs / dresseurs : création et modification de profil
+
+Échanges de cartes : proposer et accepter des échanges avec d’autres utilisateurs en respectant le même niveau et rareté
+
+Consultation des statistiques : nombre de cartes, raretés, type de Pokémon
+
+Gestion par administrateur : CRUD complet sur les cartes et boosters
+
+3. Présentation de l’entreprise et du service
+
+Entreprise : PokéTech, startup spécialisée dans la gestion de collection Pokémon
+
+Service concerné : Développement de l’application et suivi des utilisateurs
+
+Utilisateurs principaux : Dresseurs Pokémon et administrateurs
+
+Types d’utilisateurs :
+
+Dresseur : gérer son profil, sa collection, proposer et accepter des échanges
+
+Administrateur : gérer toutes les cartes et boosters (CRUD), visualiser les utilisateurs et leur collection
+
+4. Gestion de projet
+Planning :
+
+Semaine 1-2 : Analyse et rédaction du cahier des charges
+
+Semaine 3 : Modélisation des données (MCD/MLD)
+
+Semaine 4 : Conception des maquettes et architecture MVC
+
+Semaines 5-6 : Développement back-end
+
+Semaines 7-8 : Développement front-end
+
+Semaine 8 : Intégration validation des échanges et règles métier (niveau/rarete, double acceptation)
+
+Semaine 9 : Tests et validation
+
+Environnement humain : 1 Développeur
+Objectifs de qualité : Interface intuitive, rapide, sécurisée et responsive
+
+5. Spécifications fonctionnelles
+Fonctionnalité	Description	Priorité
+Gestion des Pokémon	Ouvrir un booster, récupérer 10 cartes, ajouter à sa collection	Haute
+Gestion des dresseurs	Créer et modifier profil	Haute
+Échanges	Proposer et accepter des échanges de cartes (même niveau et rareté, double validation)	Haute
+Consultation	Rechercher cartes par nom, type, rareté, ou niveau	Moyenne
+Administration	Ajouter, modifier, supprimer cartes et boosters	Haute
+
+Règles métier :
+
+Les utilisateurs ne peuvent modifier que leur propre collection
+
+Chaque booster contient exactement 10 cartes
+
+Les échanges nécessitent validation des deux parties
+
+Les utilisateurs non connectés peuvent uniquement voir les boosters
+
+6. Contraintes et livrables
+
+Contraintes :
+Base de données relationnelle (PostgreSQL)
+Interface web responsive
+Respect des normes RGPD pour les données utilisateurs
+
+Livrables attendus :
+Code source complet
+Base de données fonctionnelle
+Documentation technique et fonctionnelle
+Maquettes et diagrammes UML
+
+7. Architecture logicielle
+
+Type : MVC (Model-View-Controller)
+
+Composants :
+
+Front-end : Angular, HTML, CSS, JavaScript
+
+Back-end : Java
+
+Base de données : pgAdmin
+
+8. Maquettes et enchaînement
+
+Page d’accueil → choix : gestion Pokémon / dresseurs / échanges / administration
+
+Gestion Pokémon → liste, bouton “Ouvrir booster”
+
+Gestion dresseurs → création / modification de profil
+
+Échanges → proposition et acceptation d’échanges (même niveau et rareté, double validation)
+
+Consultation → recherche et filtres sur la collection
+
+9. Modèle Entités-Associations et Modèle Physique
+Entités :
+
+Dresseur : (id_dresseur, nom, pseudo, avatar, niveau)
+
+Carte : (id_carte, nom, type, rareté, niveau)
+
+Booster : (id_booster, date_ouverture)
+
+Collection : (id_collection, id_dresseur, id_carte)
+
+Échange : (id_echange, id_dresseur1, id_dresseur2, id_carte1, id_carte2, date, statut)
+
+Relations :
+
+Un dresseur possède plusieurs cartes à travers la collection (1:N)
+
+Un dresseur ouvre plusieurs boosters (1:N)
+
+Un échange implique deux dresseurs et deux cartes (1:1)
+
+MLD (relationnel) :
+CREATE TABLE Dresseur (
+    id_dresseur SERIAL PRIMARY KEY,
+    nom VARCHAR(50),
+    pseudo VARCHAR(50),
+    avatar VARCHAR(100),
+    niveau INT,
+    role VARCHAR(20) -- 'dresseur' ou 'admin'
+);
+
+CREATE TABLE Carte (
+    id_carte SERIAL PRIMARY KEY,
+    nom VARCHAR(50),
+    type VARCHAR(30),
+    rarete VARCHAR(20),
+    niveau INT
+);
+
+CREATE TABLE Booster (
+    id_booster SERIAL PRIMARY KEY,
+    date_ouverture DATE,
+    id_dresseur INT,
+    FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur)
+);
+
+CREATE TABLE Collection (
+    id_collection SERIAL PRIMARY KEY,
+    id_dresseur INT,
+    id_carte INT,
+    FOREIGN KEY (id_dresseur) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_carte) REFERENCES Carte(id_carte)
+);
+
+CREATE TABLE Echange (
+    id_echange SERIAL PRIMARY KEY,
+    id_dresseur1 INT,
+    id_dresseur2 INT,
+    id_carte1 INT,
+    id_carte2 INT,
+    date DATE,
+    statut VARCHAR(20),
+    FOREIGN KEY (id_dresseur1) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_dresseur2) REFERENCES Dresseur(id_dresseur),
+    FOREIGN KEY (id_carte1) REFERENCES Carte(id_carte),
+    FOREIGN KEY (id_carte2) REFERENCES Carte(id_carte)
+);
+
+9.1. Relations fonctionnelles entre entités
+Les relations entre les entités traduisent les principales règles métier de l’application Pokémon Collector :
+Un dresseur peut ouvrir plusieurs boosters (relation 1:N).
+Un dresseur possède plusieurs cartes à travers la table Collection (relation 1:N).
+Un échange implique exactement deux dresseurs et deux cartes (relation 1:1).
+Chaque carte appartient à un seul dresseur à un instant donné.
+Les administrateurs disposent de droits de gestion complets sur l’ensemble des entités (cartes, boosters, utilisateurs).
+
+10. Diagramme Entité–Association (conceptuel, textuel)
+[Dresseur] 1 ----- N [Collection] N ----- 1 [Carte]
+[Dresseur] 1 ----- N [Booster]
+[Dresseur] 1 ----- 1 [Echange] 1 ----- [Dresseur]
+[Echange] 1 ----- 1 [Carte] (id_carte1 et id_carte2)
+
+
+Chaque dresseur possède plusieurs cartes via Collection et plusieurs boosters
+
+Chaque échange implique exactement deux dresseurs et deux cartes
+
+11. Diagrammes UML
+1. Diagramme de cas d’utilisation (Use Case)
+                +-----------------+
+                |   Dresseur      |
+                +-----------------+
+                        |
+         ---------------------------------------
+         |          |           |               |
++----------------+  +----------------+  +----------------+  +----------------+
+| Gérer Profil   |  | Gérer Pokémon  |  | Gérer Echanges |  | Consulter Cartes|
++----------------+  +----------------+  +----------------+  +----------------+
+| + creerProfil()|  | + ouvrirBooster()| | + proposer()  |  | + rechercher() |
+| + modifierProfil()| | + ajouterCarte()| | + accepter()  |  +----------------+
++----------------+  +----------------+  +----------------+
+
+
+Nouveaux acteurs :
+
+Administrateur : CRUD cartes et boosters, visualisation utilisateurs
+
+2. Diagramme de séquence UML – “Ouvrir un booster”
+Dresseur        Interface Web        Back-end          Base de données
+   |                  |                  |                     |
+   |  cliquer "Ouvrir booster"           |                     |
+   |----------------------------------> |                     |
+   |                  |  demande ouverture booster           |
+   |                  |-------------------------------------->|
+   |                  |                  |  sélectionner 10 cartes aléatoires
+   |                  |                  |-------------------->|
+   |                  |                  |  stocker cartes dans Collection
+   |                  |                  |<-------------------|
+   |                  |<--------------------------------------|
+   |  affichage des 10 cartes récupérées|                     |
+
+
+Les utilisateurs non connectés ne peuvent pas ouvrir de booster
+
+3. Diagramme de classes UML
++----------------+            +----------------+
+|   Dresseur     |            |   Administrateur|
++----------------+            +----------------+
+| - id: int      |            | - id: int       |
+| - nom: string  |            | - nom: string   |
+| - pseudo: string|           | - pseudo: string|
+| - avatar: string|           | - role: string  |
+| - niveau: int  |            +----------------+
++----------------+            | + ajouterCarte()|
+| + creerProfil()|            | + modifierCarte()|
+| + modifierProfil()|         | + supprimerCarte()|
++----------------+            +----------------+
+          1
+          |
+          | 1..*
++----------------+
+|     Carte      |
++----------------+
+| - id: int      |
+| - nom: string  |
+| - type: string |
+| - rarete: string|
+| - niveau: int  |
++----------------+
+| + consulter()  |
++----------------+
+          ^ 1..*
+          |
++----------------+
+|   Collection   |
++----------------+
+| - id: int      |
++----------------+
+
++----------------+
+|    Booster     |
++----------------+
+| - id: int      |
+| - dateOuverture: date|
++----------------+
+| + ouvrir()     |
++----------------+
+
++----------------+
+|    Echange     |
++----------------+
+| - id: int      |
+| - date: date   |
+| - statut: string|
++----------------+
+| + proposer()   |
+| + accepter()   |
++----------------+
+          ^
+          |
+          |
+Dresseur 1 <------> 1 Dresseur
+Echange 1 <------> 1 Carte (id_carte1 et id_carte2)
+
+
+Deux types d’acteurs : Dresseur et Administrateur
+Échanges vérifient niveau et rareté et nécessitent double acceptation
+
+------------------------------------------------------------------
+Maquette telephone : Pokémon Collector, 3 maquettes principales :
+
+           Page d’accueil → choix entre Gérer Pokémon, Gérer profil, Échanges, Administration.
+
+           Écran d’ouverture d’un booster → bouton “Ouvrir booster” + affichage des 10 cartes tirées.
+
+           Écran d’échanges → liste des propositions, bouton Proposer un échange, bouton Accepter.
+
+
+-----------------------------------------------------------------
+Maquette PC le zoning (répartition des zones) et le wireframe (blocs fonctionnels détaillés) :
+            Header → présent avec le titre, la zone de recherche et l’icône utilisateur.
+
+            Sidebar gauche → avec les 4 menus (Gérer Pokémon, Gérer profil, Échanges, Administration).
+
+            Zone centrale → section Ouvrir booster + grille de cartes.
+
+            Colonne droite → section Échanges avec cartes et bouton Accepter.
+
+            Footer → avec Mentions légales et Support.
+
+-------------------------------------------------------------------
+WIREFRAME :
+
+1. Page d’accueil
+Header : titre + barre de recherche + profil
+Menu : Gérer Pokémon / Profil / Échanges / Admin
+Zone centrale : choix d’action ou résumé de collection
+
+2. Page Gestion Pokémon / Ouverture booster
+Bouton “Ouvrir booster”
+Grille des cartes obtenues
+
+3. Page Échanges
+Liste des propositions
+Boutons : “Proposer un échange”, “Accepter”
+
+4. Page Profil
+Formulaire : Nom, pseudo, avatar, niveau
+Boutons “Modifier”
+
+--------------------------------------------------------------
+Points manquants ou à améliorer :
+
+1. Authentification et sécurité
+. Tu as des champs username et password dans Dresseur, mais aucun mécanisme d’authentification (JWT, Spring Security) n’est implémenté.
+. Pour un vrai jeu, il faudrait sécuriser les endpoints pour que chaque dresseur ne puisse modifier que ses propres Pokémon, boosters et échanges.
+
+2. Gestion des images
+. Le champ imageUrl existe dans Pokemon, mais il n’est jamais initialisé dans le CommandLineRunner. Les cartes Pokémon ont normalement une image visible.
+
+3. Gestion de la collection
+. Tu as une entité Collection, mais aucun service ou contrôleur pour gérer la collection d’un dresseur.
+. Dans TCG, un dresseur doit pouvoir consulter sa collection et ajouter des cartes depuis un booster.
+
+4. Types de Pokémon et logique de booster
+. Actuellement, tu relies le type au premier Pokémon du booster (b.getCartes().get(0).getType()), ce qui fonctionne mais n’est pas robuste si l’ordre change.
+. Il manque un mécanisme pour générer des boosters aléatoires ou équilibrés selon la rareté.
+
+5. Endpoints supplémentaires utiles
+. Lister les Pokémon par type, rareté ou niveau.
+. Lister les boosters disponibles par dresseur.
+. Historique des échanges pour chaque dresseur.
+
+6. Validation et erreurs
+. Les services lancent parfois des RuntimeException directement. Il serait plus propre d’utiliser des exceptions personnalisées et de renvoyer des codes HTTP adéquats (404, 400, etc.).
+
+7. Évolution des Pokémon
+. Pas de gestion d’évolution (ex : Carapuce → Carabaffe → Tortank), ce qui est une mécanique centrale dans TCG Pokémon.
+
+8. Statistiques et gameplay
+. Pas de logique de combat ou d’utilisation des Pokémon dans des matchs, mais ça dépend si l’objectif est juste une collection/échange.
+
+
+Suggestions pour se rapprocher du vrai TCG Pokémon
+. Ajouter un endpoint pour ouvrir un booster aléatoire, avec distribution par rareté (Commune, Peu Commune, Rare).
+. Ajouter un service Collection pour gérer les cartes possédées par un dresseur.
+. Ajouter Spring Security pour authentifier les dresseurs et sécuriser les actions (PATCH/POST).
+. Ajouter la gestion des images et illustrations des cartes pour l’interface front-end.
+. Ajouter un champ attaque spéciale ou coût d’énergie pour mieux simuler le TCG.
+. Ajouter des évolutions et stades de Pokémon pour refléter les mécaniques du jeu.
+
+
