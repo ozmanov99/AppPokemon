@@ -4,6 +4,7 @@ import com.example.pokemonapp.entities.Dresseur;
 import com.example.pokemonapp.services.DresseurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +44,10 @@ public class DresseurController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
-        service.supprimer(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('ADMIN')") // <-- seul l’admin peut supprimer
+//    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
+//        service.supprimer(id);
+//        return ResponseEntity.noContent().build();
+//    }
 }

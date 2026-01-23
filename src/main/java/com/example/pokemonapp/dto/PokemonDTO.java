@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 public class PokemonDTO {
+    private Long id;
     private String nom;
     private String type;
     private int niveau;
