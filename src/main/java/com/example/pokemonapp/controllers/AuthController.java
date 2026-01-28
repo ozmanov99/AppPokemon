@@ -1,5 +1,6 @@
 package com.example.pokemonapp.controllers;
 
+import com.example.pokemonapp.entities.Dresseur;
 import com.example.pokemonapp.repositories.DresseurRepository;
 import com.example.pokemonapp.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,22 @@ public class AuthController {
         );
 
         // Générer le token JWT
+        return jwtUtils.generateToken(username);
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestParam String username, @RequestParam String password) {
+        if (dresseurRepo.existsByUsername(username)) {
+            throw new RuntimeException("Utilisateur déjà existant");
+        }
+
+        Dresseur dresseur = new Dresseur();
+        dresseur.setUsername(username);
+        dresseur.setPassword(passwordEncoder.encode(password));
+
+        dresseurRepo.save(dresseur);
+
+        // Retourner directement un JWT
         return jwtUtils.generateToken(username);
     }
 }

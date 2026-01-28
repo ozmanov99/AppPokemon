@@ -39,27 +39,22 @@ public class SecurityConfig {
                         // OPTIONS pour le pré-flight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // Images : autorisées en GET
-                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
-
-                        // Auth : inscription / login
+                        // Auth : login / register → public
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Pokémons : GET autorisé
-                        .requestMatchers(HttpMethod.GET, "/api/pokemons/**").permitAll()
+                        // Images publiques
+                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
 
-                        // Boosters : POST autorisé (ouvrir booster)
-                        .requestMatchers(HttpMethod.POST, "/api/boosters/**").permitAll()
-
-                        // Swagger si besoin
+                        // Swagger
                         .requestMatchers(
                                 "/swagger-ui.html", "/swagger-ui/**",
-                                "/swagger-ui/index.html", "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml"
+                                "/swagger-ui/index.html", "/v3/api-docs", "/v3/api-docs/**"
                         ).permitAll()
 
-                        // Tout le reste nécessite JWT
+                        // Tout le reste → JWT requis
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
