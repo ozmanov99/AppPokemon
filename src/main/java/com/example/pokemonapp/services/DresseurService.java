@@ -14,28 +14,10 @@ public class DresseurService {
     @Autowired
     private DresseurRepository repository;
 
-    public List<Dresseur> lister() {
-        return repository.findAll();
+    public Optional<Dresseur> findByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
-    public Optional<Dresseur> rechercher(Long id) {
-        return repository.findById(id);
-    }
 
-    public Dresseur sauvegarder(Dresseur dresseur) {
-        return repository.save(dresseur);
-    }
-
-    public void supprimer(Long id) {
-        repository.findById(id).ifPresent(dresseur -> {
-            if (dresseur.getPokemons() != null) {
-                dresseur.getPokemons().clear();
-            }
-            if (dresseur.getBoosters() != null) {
-                dresseur.getBoosters().clear();
-            }
-            repository.delete(dresseur);
-        });
-    }
 }
 
