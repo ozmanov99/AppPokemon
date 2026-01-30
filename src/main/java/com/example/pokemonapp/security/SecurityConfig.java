@@ -36,16 +36,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // OPTIONS pour le pré-flight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                        // Auth : login / register → public
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        // Images publiques
                         .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
-
-                        // Swagger
                         .requestMatchers(
                                 "/swagger-ui.html", "/swagger-ui/**",
                                 "/swagger-ui/index.html", "/v3/api-docs", "/v3/api-docs/**"
@@ -84,7 +77,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // Front Angular
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

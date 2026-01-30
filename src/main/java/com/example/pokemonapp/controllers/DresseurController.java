@@ -17,24 +17,32 @@ public class DresseurController {
     @Autowired
     private DresseurService service;
 
+    // Seul l'admin peut lister tous les dresseurs
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Dresseur> getAll() {
         return service.lister();
     }
 
+    // Chaque dresseur peut voir son propre profil ou admin peut voir n’importe qui
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.username == @dresseurService.rechercher(#id).orElse(null)?.username")
     public ResponseEntity<Dresseur> get(@PathVariable Long id) {
         return service.rechercher(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Créer un dresseur (seul admin pour créer manuellement, sinon register via AuthController)
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Dresseur creer(@RequestBody Dresseur d) {
         return service.sauvegarder(d);
     }
 
+    // Modifier un dresseur : admin ou le dresseur lui-même
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.username == @dresseurService.rechercher(#id).orElse(null)?.username")
     public ResponseEntity<Dresseur> modifier(@PathVariable Long id, @RequestBody Dresseur d) {
         return service.rechercher(id)
                 .map(existing -> {
@@ -44,10 +52,11 @@ public class DresseurController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-//    @DeleteMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN')") // <-- seul l’admin peut supprimer
-//    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
-//        service.supprimer(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    // Supprimer : seulement l'admin
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> supprimer(@PathVariable Long id) {
+        service.supprimer(id);
+        return ResponseEntity.noContent().build();
+    }
 }
