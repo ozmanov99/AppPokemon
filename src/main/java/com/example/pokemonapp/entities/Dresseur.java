@@ -24,6 +24,8 @@ public class Dresseur {
 
     private String role = "DRESSEUR"; // Par défaut Dresseur
 
+    private String photoUrl;
+
     @OneToMany(mappedBy = "dresseur", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pokemon> pokemons;
 

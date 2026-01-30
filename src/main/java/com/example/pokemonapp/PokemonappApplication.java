@@ -43,6 +43,7 @@ public class PokemonappApplication implements CommandLineRunner {
 			admin.setUsername("admin");
 			admin.setPassword(passwordEncoder.encode("admin123"));
 			admin.setRole("ADMIN");
+			admin.setPhotoUrl("http://localhost:8080/images/admin.png");
 
 			// --- Création des Dresseurs normaux ---
 			Dresseur sacha = new Dresseur();
@@ -51,6 +52,7 @@ public class PokemonappApplication implements CommandLineRunner {
 			sacha.setNiveau(10);
 			sacha.setUsername("sacha");
 			sacha.setPassword(passwordEncoder.encode("pikachu"));
+			sacha.setPhotoUrl("http://localhost:8080/images/sachapikachu.png");
 
 			Dresseur ondine = new Dresseur();
 			ondine.setNom("Misty");
@@ -58,6 +60,7 @@ public class PokemonappApplication implements CommandLineRunner {
 			ondine.setNiveau(8);
 			ondine.setUsername("ondine");
 			ondine.setPassword(passwordEncoder.encode("stari"));
+			ondine.setPhotoUrl("http://localhost:8080/images/ondinestari.png");
 
 			Dresseur pierre = new Dresseur();
 			pierre.setNom("Pierre");
@@ -65,6 +68,7 @@ public class PokemonappApplication implements CommandLineRunner {
 			pierre.setNiveau(12);
 			pierre.setUsername("pierre");
 			pierre.setPassword(passwordEncoder.encode("onix"));
+			pierre.setPhotoUrl("http://localhost:8080/images/pierreonix.png");
 
 			dresseurRepository.saveAll(Arrays.asList(admin, sacha, ondine, pierre));
 
