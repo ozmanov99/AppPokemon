@@ -4,7 +4,6 @@ import com.example.pokemonapp.dto.PagedResponse;
 import com.example.pokemonapp.dto.PokemonDTO;
 import com.example.pokemonapp.entities.Collection;
 import com.example.pokemonapp.entities.Dresseur;
-import com.example.pokemonapp.entities.Pokemon;
 import com.example.pokemonapp.repositories.CollectionRepository;
 import com.example.pokemonapp.repositories.DresseurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,6 @@ public class PokemonController {
 
     /**
      * Récupérer les Pokémon du dresseur connecté avec pagination
-     * @param authentication : info JWT du dresseur
-     * @param page : numéro de page (0 par défaut)
-     * @param size : nombre d’éléments par page (20 par défaut)
      */
     @GetMapping("/pokemons")
     public PagedResponse<PokemonDTO> getMyPokemons(
@@ -70,13 +66,20 @@ public class PokemonController {
     }
 
     /**
-     * Supprimer un Pokémon du dresseur connecté
+     * Supprimer UN SEUL Pokémon (une seule carte) du dresseur connecté
      */
     @DeleteMapping("/pokemons/{id}")
     public ResponseEntity<Void> deletePokemon(@PathVariable Long id, Authentication authentication) {
+
         String username = authentication.getName();
         Dresseur d = dresseurRepo.findByUsername(username).orElseThrow();
-        collectionRepo.deleteByCarteIdAndDresseur(id, d);
+
+        Collection carte = collectionRepo
+                .findFirstByCarteIdAndDresseur(id, d)
+                .orElseThrow(() -> new RuntimeException("Ce Pokémon n'est pas dans ta collection"));
+
+        collectionRepo.delete(carte);
+
         return ResponseEntity.noContent().build();
     }
 }
